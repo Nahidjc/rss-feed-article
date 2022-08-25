@@ -33,4 +33,4 @@ let students = [
 students.sort((a, b) => {
   return b.age - a.age;
 });
-console.log(students.slice(0, 1));
+console.log(students.slice(0, 20));
