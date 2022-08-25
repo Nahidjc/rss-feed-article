@@ -6,8 +6,9 @@ const Parser = require("rss-parser");
   const parser = new Parser();
 
   const feed = await parser.parseURL(
-    "http://feeds.bbci.co.uk/news/world/rss.xml"
+    "http://www.espncricinfo.com/rss/livescores.xml"
   );
+  console.log(feed);
 
   let items = [];
 
