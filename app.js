@@ -21,6 +21,7 @@ const parser = require("rss-url-parser");
       items.push(item);
     }
   });
+
   let filteredItemsFields = items.map((item) => {
     return {
       title: item.title,
@@ -30,6 +31,8 @@ const parser = require("rss-url-parser");
       author: item.author,
     };
   });
+
+  let articles = [];
   const browser = await puppeteer.launch();
   const page = await browser.newPage();
   for (let i = 0; i < filteredItemsFields.length; i++) {
@@ -41,48 +44,20 @@ const parser = require("rss-url-parser");
         ).innerText;
         return view;
       });
+      console.log(articleViews ? true : false);
       if (articleViews) {
         filteredItemsFields[i].views = articleViews;
+        articles.push(filteredItemsFields[i]);
       }
     } catch (error) {
       console.error(error);
     }
   }
   await browser.close();
-  fs.writeFileSync(fileName, JSON.stringify(filteredItemsFields));
+  articles.sort((a, b) => {
+    return b.views - a.views;
+  });
+  console.log(filteredItemsFields.length);
+  console.log(articles.length);
+  fs.writeFileSync(fileName, JSON.stringify(articles.slice(0, 20)));
 })();
-
-// const getArticleView = async (url) => {
-//   const browser = await puppeteer.launch();
-//   const page = await browser.newPage();
-
-//   await page.goto(url);
-//   await page.waitForNavigation({ waitUntil: "networkidle2" });
-//   let data = await page.evaluate(() => {
-//     let name = document.querySelector('span[class="post-actions__item-count"]').innerText;
-//     return {
-//       name,
-//     };
-//   });
-//   console.log(data);
-//   await browser.close();
-// };
-
-function isEquivalent(a, b) {
-  let aProps = Object.getOwnPropertyNames(a);
-  let bProps = Object.getOwnPropertyNames(b);
-
-  if (aProps.length != bProps.length) {
-    return false;
-  }
-
-  for (let i = 0; i < aProps.length; i++) {
-    let propName = aProps[i];
-
-    if (a[propName] !== b[propName]) {
-      return false;
-    }
-  }
-
-  return true;
-}
