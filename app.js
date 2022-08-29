@@ -22,7 +22,7 @@ const parser = require("rss-url-parser");
     }
   });
 
-  let filteredItemsFields = items.map((item) => {
+  let filterArticleFields = items.map((item) => {
     return {
       title: item.title,
       description: item.description,
@@ -35,29 +35,27 @@ const parser = require("rss-url-parser");
   let articles = [];
   const browser = await puppeteer.launch();
   const page = await browser.newPage();
-  for (let i = 0; i < filteredItemsFields.length; i++) {
+  for (let i = 0; i < filterArticleFields.length; i++) {
     try {
-      await page.goto(filteredItemsFields[i].link);
+      await page.goto(filterArticleFields[i].link);
       const articleViews = await page.evaluate(() => {
         const view = document.querySelector(
           'span[class="post-actions__item-count"]'
         ).innerText;
         return view;
       });
-      console.log(articleViews ? true : false);
       if (articleViews) {
-        filteredItemsFields[i].views = articleViews;
-        articles.push(filteredItemsFields[i]);
+        filterArticleFields[i].views = articleViews;
+        articles.push(filterArticleFields[i]);
       }
     } catch (error) {
-      console.error(error);
+      console.log(error);
     }
   }
   await browser.close();
   articles.sort((a, b) => {
     return b.views - a.views;
   });
-  console.log(filteredItemsFields.length);
-  console.log(articles.length);
+
   fs.writeFileSync(fileName, JSON.stringify(articles.slice(0, 20)));
 })();
