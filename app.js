@@ -5,11 +5,10 @@ const parser = require("rss-url-parser");
 (async function main() {
   const feed = await parser("https://cointelegraph.com/rss");
   let items = [];
-  const today = new Date().getTime();
   var date = new Date();
   const lastSeventhDate = date.setDate(date.getDate() - 7);
 
-  const fileName = `${today}.json`;
+  const fileName = `cointelegraph.json`;
   if (fs.existsSync(fileName)) {
     items = require(`./${fileName}`);
   }
@@ -31,6 +30,18 @@ const parser = require("rss-url-parser");
       author: item.author,
     };
   });
+  var flags = [],
+    output = [],
+    l = filterArticleFields.length,
+    i;
+  for (i = 0; i < l; i++) {
+    if (flags[filterArticleFields[i].link]) {
+      continue;
+    }
+    flags[filterArticleFields[i].link] = true;
+    output.push(filterArticleFields[i]);
+  }
+  filterArticleFields = output;
 
   let articles = [];
   const browser = await puppeteer.launch();

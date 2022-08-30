@@ -14,27 +14,46 @@
   <body>
     <main>
       <div class="container">
-        <div class="row" id="mianArticles"></div>
+        <div id="mianArticles"></div>
       </div>
     </main>
 
     <script>
-      let object;
-      let httpRequest = new XMLHttpRequest(); // asynchronous request
-      httpRequest.open("GET", "./1661757958962.json", true);
-      httpRequest.send();
+      let req = new XMLHttpRequest();
+      allnews = [];
+      req.onreadystatechange = () => {
+        if (req.readyState == XMLHttpRequest.DONE) {
+          responseText = JSON.parse(req.responseText);
+          allnews = responseText.record;
+        }
+      };
+
+      req.open(
+        "GET",
+        "https://api.jsonbin.io/v3/b/630dbd125c146d63ca857f7d",
+        true
+      );
+      req.setRequestHeader(
+        "X-Master-Key",
+        "$2b$10$vkNmxwsh1V6lVwkuC7Ul7.BuiWfpDCJIG2xTxqkz/lOLgghMsfRP."
+      );
+      req.send();
+      // let object;
+      // let httpRequest = new XMLHttpRequest(); // asynchronous request
+      // httpRequest.open("GET", "./cointelegraph.json", true);
+      // httpRequest.send();
       document.getElementById("mianArticles").innerHTML = "";
       const element = document.createElement("div");
       element.classList.add("row");
       element.classList.add("gy-2");
-      httpRequest.addEventListener("readystatechange", function () {
+
+      req.addEventListener("readystatechange", function () {
         if (this.readyState === this.DONE) {
-          allnews = JSON.parse(this.response);
           elements = allnews.map((news) => {
-            return `<div class="col-md-4">
+            return `<div class="col-md-7">
               <div class="card">
                 <div class="card-body">
-                  <p class="card-text">
+                  <p class="card-text text-center">
                     ${news.title}
                   </p>
                   <div class="text-center">

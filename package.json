@@ -9,8 +9,10 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "jsonbin-io-api": "^2.1.0",
     "puppeteer": "^16.2.0",
     "rss-parser": "^3.12.0",
-    "rss-url-parser": "^2.2.4"
+    "rss-url-parser": "^2.2.4",
+    "xhr2": "^0.2.1"
   }
 }
